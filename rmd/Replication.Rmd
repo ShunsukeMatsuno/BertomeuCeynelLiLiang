@@ -1,0 +1,162 @@
+---
+title: "Replication of BCXL"
+author: "Shunsuke Matsuno"
+date: "2020/6/1"
+output:
+  prettydoc::html_pretty:
+    theme: cayman
+    highlight: github
+---
+
+```{r settings, echo=FALSE}
+### Setting the global code chunk options ###
+# Args
+#   comment='': won't append any string to the start of each line of results
+#   fig.align='center': align figures to the center of document
+knitr::opts_chunk$set(comment="", fig.align="center", warning = FALSE)
+```
+
+# Description
+
+
+# Required libraries
+```{r, message=FALSE}
+easypackages::libraries('tidyverse', 'ggplot2', 'BCXL')
+```
+
+# Simulate Data
+- In this section, we simulate data according to the optimization behavior described in the paper and estimated parameters.
+
+## Parameters
+- I use pre-SOX parameters
+```{r}
+theta_inv <- 1/0.007
+m         <- -0.011
+sigma     <- 0.031
+
+theta <- c(theta_inv = theta_inv, m = m, sigma = sigma)
+```
+
+## Optimization
+- The investor's pricing function is written in `investor_response.R`.
+```{r}
+r <- seq(-0.1, 0.1, .0005)
+price <- investor_response(r)
+qplot(r, price, geom = 'line') + 
+  geom_vline(xintercept = 0, linetype = 'dotted') +
+  geom_hline(yintercept = 0, linetype = 'dotted') +
+  theme_bw()
+```
+
+## Private Signal
+
+```{r}
+set.seed(1)
+
+N <- 100000    # the number of firms
+
+df_firm <- tibble(
+  firm = 1:N,
+  x = rnorm(N, m, sigma)
+  )
+
+ggplot(df_firm, aes(x = x)) +
+  geom_histogram(color="white", bins = 50) +
+  theme_bw()
+```
+
+- Then, I simulate optimal reporting.
+- The cost function is specified as quadratic: 
+
+$$
+  \psi(r-x) = 2 (r-x)^2
+$$
+- `compute_optimal_reporting.R` computes the optimal manipulation.
+    - This function depentds on `compute_utility.R`, which computes the utility for each manipulation and $x$.
+    - Please see `Summary of BCXL.pdf` and the original paper for more details.
+```{r}
+compute_utility
+compute_optimal_reporting
+```
+
+```{r}
+# optimal reporting
+df_firm_reported <- df_firm %>% 
+  mutate(r = map_dbl(.x = x, .f = compute_optimal_reporting, theta = theta)) %>% 
+  mutate(price = investor_response(r))
+
+# plot
+df_firm_reported_plot <- df_firm_reported %>% 
+  select(firm, x, r) %>% 
+  pivot_longer(-firm, names_to = "type", values_to = "freq")
+
+ggplot(df_firm_reported_plot, aes(x = freq, fill = type)) +
+  geom_histogram(aes(y = ..density..),
+                 color    = 'white',
+                 position = 'identity', 
+                 alpha    = .5,
+                 bins     = 50) +
+  theme_bw()
+```
+- I regard the simulated reporting as 'observed' data.
+
+### Cost parameter
+- By the way, we can play around by changing the values of $\theta^-1$ to see the effect on reported distribution.
+    - We expect the the distribution of $x$ and $r$ is close when $\theta^-1$ is small and vice versa.
+    - `plot_r_x.R` is the function that takes $\theta^01$ and re-computes the code.
+```{r}
+# low cost
+plot_r_x(1/2 * theta[1])
+
+# high cost
+plot_r_x(2* theta[1])
+```
+
+
+# Estimation
+
+## Step 1. Estimation of pricing strategy
+- I use polynomial regression to estimate $\gamma$.
+    - `estimate_gamma_poly.R` computes predicted value of price with polynomial specification and derive its first- and second-order derivatives analytically.
+```{r}
+estimate_gamma_poly
+```
+  
+
+## Step 2. Parameter Search
+- `compue_lkhd.R` returns negative likelihood.
+```{r}
+compute_lkhd
+```
+
+- We minimizes this negative likelihood.
+
+```{r}
+# optimization
+optim_result <- optim(par    = theta,
+                      fn     = compute_lkhd,
+                      df     = df_firm_reported,
+                      lower  = c(0.00001, -5, 0.00001),
+                      upper  = c(1000, 5, 10),
+                      method = "L-BFGS-B"
+                      )
+optim_result
+```
+## Plot objective function
+- We see the values of objective functions around the true parameter values.
+    - `plot_obj.R` does this.
+```{r}
+plot_obj
+```
+
+```{r plot, cache=TRUE}
+theta_inv_vec <- seq(100, 200, 2)
+plot_obj(theta, df_firm_reported, theta_inv_vec, 1)
+
+m_vec <- seq(-1, 1, .05)
+plot_obj(theta, df_firm_reported, m_vec, 2)
+
+sigma_vec <- seq(0.01, .1, .002)
+plot_obj(theta, df_firm_reported, sigma_vec, 3)
+```
+
