@@ -17,7 +17,8 @@ knitr::opts_chunk$set(comment="", fig.align="center", warning = FALSE)
 ```
 
 # Description
-
+- In this note, we replicate [Bertomeu, Cheynel, Li, and Liang (BCXL; 2020)](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3680697).
+    - This paper proposes an estimation of a manager's optimal manipulation in a static situation with manipulation costs.
 
 # Required libraries
 ```{r, message=FALSE}
@@ -75,6 +76,7 @@ $$
 - `compute_optimal_reporting.R` computes the optimal manipulation.
     - This function depentds on `compute_utility.R`, which computes the utility for each manipulation and $x$.
     - Please see `Summary of BCXL.pdf` and the original paper for more details.
+    
 ```{r}
 compute_utility
 compute_optimal_reporting

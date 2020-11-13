@@ -167,6 +167,12 @@ a.sourceLine {
 <section class="main-content">
 <div id="description" class="section level1">
 <h1>Description</h1>
+<ul>
+<li>In this note, we replicate <a href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3680697">Bertomeu, Cheynel, Li, and Liang (BCXL; 2020)</a>.
+<ul>
+<li>This paper proposes an estimation of a manager’s optimal manipulation in a static situation with manipulation costs.</li>
+</ul></li>
+</ul>
 </div>
 <div id="required-libraries" class="section level1">
 <h1>Required libraries</h1>
@@ -240,7 +246,7 @@ a.sourceLine {
   
   return(benefit - cost)
 }
-&lt;bytecode: 0x0000000025c241e0&gt;
+&lt;bytecode: 0x00000000269899f8&gt;
 &lt;environment: namespace:BCXL&gt;</code></pre>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a>compute_optimal_reporting</span></code></pre></div>
 <pre><code>function(theta, x){
@@ -258,7 +264,7 @@ a.sourceLine {
   return(optim_result$par)
 
 }
-&lt;bytecode: 0x0000000025d174b8&gt;
+&lt;bytecode: 0x0000000026a78bb8&gt;
 &lt;environment: namespace:BCXL&gt;</code></pre>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a><span class="co"># optimal reporting</span></span>
 <span id="cb9-2"><a href="#cb9-2"></a>df_firm_reported &lt;-<span class="st"> </span>df_firm <span class="op">%&gt;%</span><span class="st"> </span></span>
@@ -324,7 +330,7 @@ a.sourceLine {
   
   return(list(pred = pred, pred_deriv = pred_deriv, pred_deriv2 = pred_deriv2))
 }
-&lt;bytecode: 0x0000000027e44700&gt;
+&lt;bytecode: 0x0000000029603ad8&gt;
 &lt;environment: namespace:BCXL&gt;</code></pre>
 </div>
 <div id="step-2.-parameter-search" class="section level2">
@@ -356,7 +362,7 @@ a.sourceLine {
   
   return(-sum(lkhd))
 }
-&lt;bytecode: 0x00000000292889f8&gt;
+&lt;bytecode: 0x0000000026cb1b98&gt;
 &lt;environment: namespace:BCXL&gt;</code></pre>
 <ul>
 <li>We minimizes this negative likelihood.</li>
@@ -448,7 +454,7 @@ $message
   plot(g)
   
 }
-&lt;bytecode: 0x000000002a13ab90&gt;
+&lt;bytecode: 0x000000002ad94b80&gt;
 &lt;environment: namespace:BCXL&gt;</code></pre>
 <div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1"></a>theta_inv_vec &lt;-<span class="st"> </span><span class="kw">seq</span>(<span class="dv">100</span>, <span class="dv">200</span>, <span class="dv">2</span>)</span>
 <span id="cb20-2"><a href="#cb20-2"></a><span class="kw">plot_obj</span>(theta, df_firm_reported, theta_inv_vec, <span class="dv">1</span>)</span></code></pre></div>
