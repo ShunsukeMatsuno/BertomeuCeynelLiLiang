@@ -1,5 +1,5 @@
 # Replication of Bertomeu, Cheynel, Li, and Liang (2020)
-- In this R project, I replicate the analysis of [Bertomeu, Cheynel, Li, and Liang (BCXL; 2020))](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3680697. 
+- In this R project, I replicate the analysis of [Bertomeu, Cheynel, Li, and Liang (BCXL; 2020)](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3680697). 
 - This paper is forthcoming in Management Science, but the code is based on manuscript version.
     - I haven't confirmed yet what have changed from the manuscript.
 
