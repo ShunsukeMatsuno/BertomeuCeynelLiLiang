@@ -10,7 +10,3 @@
 - `BCXL_Summary.pdf` is a summary of BCXL's estimation method.
 - If you have any comments or corrections, please post on Issues or email me (contact info. appears below).
 
-# Contact Information
-- Name: Shunsuke Matsuno
-- Affiliation: The University of Tokyo, Graduate School of Economics, Second-Year Master's Student
-- Contact: [smatsuno@g.ecc.u-tokyo.ac.jp](mailto:smatsuno@g.ecc.u-tokyo.ac.jp)
